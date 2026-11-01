@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Stu's Wonder Run</title>
+<style>
+html,body{margin:0;height:100%;background:#7ec8f0;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#unity-canvas{width:min(100vw,56.25vh);height:min(100vh,177.78vw);touch-action:none;display:block;background:#7ec8f0}
+#load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font:bold 22px -apple-system,sans-serif;color:#fff;text-shadow:0 2px 4px #0006;background:#7ec8f0}
+#bar{width:60%;height:14px;border-radius:7px;background:#fff6;margin-top:14px;overflow:hidden}#fill{height:100%;width:0;background:#ffd23a}
+#rot{display:none}
+@media (orientation:landscape) and (max-height:500px){#rot{display:flex;position:fixed;inset:0;z-index:9;background:#7ec8f0;color:#fff;font:bold 22px sans-serif;align-items:center;justify-content:center}}
+</style></head>
+<body><div id="wrap"><canvas id="unity-canvas" tabindex="-1"></canvas></div>
+<div id="load">Stu's Wonder Run<div id="bar"><div id="fill"></div></div><div id="pct" style="font-size:15px;margin-top:8px">Loading…</div></div>
+<div id="rot">Turn your phone upright 📱</div>
+<script src="Build/out.loader.js"></script>
+<script>
+var c=document.querySelector("#unity-canvas");
+if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){c.style.width='100vw';c.style.height='100%';}
+["touchmove","gesturestart"].forEach(function(e){document.addEventListener(e,function(ev){ev.preventDefault()},{passive:false})});
+createUnityInstance(c,{dataUrl:"Build/out.data.unityweb",frameworkUrl:"Build/out.framework.js.unityweb",codeUrl:"Build/out.wasm.unityweb",
+ streamingAssetsUrl:"StreamingAssets",companyName:"Stu",productName:"Stu's Wonder Run",productVersion:"0.1",
+ devicePixelRatio:Math.min(window.devicePixelRatio||1,2)},
+ function(p){document.getElementById("fill").style.width=(p*100)+"%";document.getElementById("pct").textContent="Loading… "+Math.round(p*100)+"%";})
+.then(function(){document.getElementById("load").style.display="none";c.focus();})
+.catch(function(m){document.getElementById("pct").textContent="Couldn't start: "+m;});
+</script></body></html>
