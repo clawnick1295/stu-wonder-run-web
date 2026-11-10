@@ -17,7 +17,7 @@ a{color:inherit}
 .wrap{max-width:1040px;margin:0 auto;padding:0 18px}
 /* hero */
 .hero{position:relative;overflow:hidden;background:var(--sky)}
-.hero img.bg{display:block;width:100%;height:clamp(230px,58vh,560px);object-fit:cover;object-position:50% 40%}
+.hero img.bg{display:block;width:100%;height:clamp(230px,58vh,560px);object-fit:cover;object-position:50% 6%}
 .hero .title{position:absolute;left:0;right:0;top:0;text-align:center;padding:14px 12px 0}
 .hero h1{margin:0;font-size:clamp(30px,6.4vw,62px);color:var(--gold);letter-spacing:.5px;
   -webkit-text-stroke:clamp(1.5px,.35vw,3px) var(--ink);paint-order:stroke fill;text-shadow:0 3px 0 rgba(75,47,94,.35)}
@@ -55,10 +55,12 @@ h2 .dot{width:14px;height:14px;border-radius:50%;background:var(--gold);border:2
 .badge{position:absolute;top:10px;left:10px;padding:4px 12px;border-radius:999px;background:var(--gold);border:2px solid var(--ink);font-weight:800;font-size:15px}
 footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
 .turn{display:none}
-@media (orientation:portrait){.turn{display:block;margin:10px 0 0;font-size:15px;font-weight:700}}
+@media (orientation:portrait){.turn{display:block;margin:10px 0 0;font-size:15px;font-weight:700}
+  .hero img.bg{height:clamp(420px,62vh,560px);object-position:36% 0}
+  .hero .title{top:auto;bottom:78px}}
 /* short landscape phones: keep the hero compact */
 @media (orientation:landscape) and (max-height:500px){
-  .hero img.bg{height:78vh}
+  .hero img.bg{height:80vh}
   .hero h1{font-size:40px}
   section{padding:18px 0 4px}
 }
