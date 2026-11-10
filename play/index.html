@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#EFE3CC">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="data:,">
+<title>Stu's Wonder Run</title>
+<style>
+:root{--trav:#EFE3CC;--ochre:#D9A441;--terra:#C2603B;--pine:#4F6B3A;--teal:#5FA8A3;--sky:#A9CBE3;--gold:#F2C94C;--ink:#4b2f5e;--card:#fff8ea}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--trav);color:var(--ink);font-family:"Trebuchet MS","Arial Rounded MT Bold","Avenir Next",Verdana,system-ui,sans-serif;line-height:1.35;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px}
+/* hero */
+.hero{position:relative;overflow:hidden;background:var(--sky)}
+.hero img.bg{display:block;width:100%;height:clamp(230px,58vh,560px);object-fit:cover;object-position:50% 40%}
+.hero .title{position:absolute;left:0;right:0;top:0;text-align:center;padding:14px 12px 0}
+.hero h1{margin:0;font-size:clamp(30px,6.4vw,62px);color:var(--gold);letter-spacing:.5px;
+  -webkit-text-stroke:clamp(1.5px,.35vw,3px) var(--ink);paint-order:stroke fill;text-shadow:0 3px 0 rgba(75,47,94,.35)}
+.hero p.tag{display:inline-block;margin:8px 0 0;padding:6px 16px;border-radius:999px;background:rgba(255,248,234,.92);border:2px solid var(--ink);font-weight:800;font-size:clamp(14px,2.2vw,20px)}
+.jump{position:absolute;right:16px;bottom:14px;display:inline-block;padding:12px 26px;border-radius:999px;background:var(--terra);color:#fff8ea;
+  font-weight:800;font-size:clamp(17px,2.6vw,24px);text-decoration:none;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink)}
+.jump:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+/* sections */
+section{padding:26px 0 8px}
+h2{font-size:clamp(24px,3.6vw,34px);margin:0 0 14px;color:var(--terra);display:flex;align-items:center;gap:10px}
+h2 .dot{width:14px;height:14px;border-radius:50%;background:var(--gold);border:2px solid var(--ink);flex:none}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.tile{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:14px 16px;display:flex;gap:14px;align-items:center;box-shadow:0 4px 0 rgba(75,47,94,.25)}
+.tile .ic{flex:none;width:64px;height:64px;border-radius:18px;display:grid;place-items:center;border:2px solid var(--ink)}
+.tile b{display:block;font-size:20px}
+.tile span{font-size:16px}
+.ic svg{width:44px;height:44px}
+.rules{background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:8px 18px;margin:0;list-style:none;box-shadow:0 4px 0 rgba(75,47,94,.25)}
+.rules li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;font-size:18px;border-bottom:2px dashed rgba(75,47,94,.2)}
+.rules li:last-child{border-bottom:0}
+.rules .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--gold);border:2px solid var(--ink);display:grid;place-items:center;font-weight:800}
+/* maps */
+.maps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.map{position:relative;background:var(--card);border:3px solid var(--ink);border-radius:26px;overflow:hidden;box-shadow:0 6px 0 rgba(75,47,94,.3)}
+.map a.main{display:block;text-decoration:none}
+.map img{display:block;width:100%;height:auto;aspect-ratio:1738/690;object-fit:cover;border-bottom:3px solid var(--ink);background:var(--sky)}
+.map .info{padding:12px 16px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.map h3{margin:0;font-size:28px;flex:1 1 auto}
+.map .sub{display:block;font-size:15px;font-weight:600;opacity:.85}
+.play{flex:none;padding:12px 24px;border-radius:999px;color:#fff8ea;font-weight:800;font-size:22px;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink)}
+.rio .play{background:var(--teal)} .rome .play{background:var(--terra)}
+.map a.main:active .play{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.alt{display:block;margin:-4px 16px 14px;font-size:15px;font-weight:800}
+.alt a{display:inline-block;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:#e7f3f1;text-decoration:none}
+.badge{position:absolute;top:10px;left:10px;padding:4px 12px;border-radius:999px;background:var(--gold);border:2px solid var(--ink);font-weight:800;font-size:15px}
+footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
+.turn{display:none}
+@media (orientation:portrait){.turn{display:block;margin:10px 0 0;font-size:15px;font-weight:700}}
+/* short landscape phones: keep the hero compact */
+@media (orientation:landscape) and (max-height:500px){
+  .hero img.bg{height:78vh}
+  .hero h1{font-size:40px}
+  section{padding:18px 0 4px}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <img class="bg" src="img/hero-960.webp" srcset="img/hero-960.webp 960w, img/hero.webp 1600w" sizes="100vw" alt="Stu waving between Rio de Janeiro and Rome" fetchpriority="high">
+  <div class="title">
+    <h1>Stu's Wonder Run</h1>
+    <p class="tag">Run, jump and wonder around the world!</p>
+  </div>
+  <a class="jump" href="#maps">Pick a map &darr;</a>
+</header>
+
+<main class="wrap">
+  <section id="how">
+    <h2><span class="dot"></span>How to Play</h2>
+    <div class="how">
+      <div class="tile"><div class="ic" style="background:#fde7a8"><svg viewBox="0 0 48 48"><path d="M24 6v24" stroke="#4b2f5e" stroke-width="4" stroke-linecap="round"/><path d="M14 16l10-10 10 10" fill="none" stroke="#4b2f5e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="38" r="6" fill="#C2603B" stroke="#4b2f5e" stroke-width="3"/></svg></div>
+        <div><b>Tap to jump</b><span>Tap anywhere. Hold for a big jump.</span></div></div>
+      <div class="tile"><div class="ic" style="background:#d9ecea"><svg viewBox="0 0 48 48"><path d="M24 8v26" stroke="#4b2f5e" stroke-width="4" stroke-linecap="round"/><path d="M14 26l10 10 10-10" fill="none" stroke="#4b2f5e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 42h32" stroke="#5FA8A3" stroke-width="4" stroke-linecap="round"/></svg></div>
+        <div><b>Swipe down to slide</b><span>Duck under birds and pigeons.</span></div></div>
+      <div class="tile"><div class="ic" style="background:#fff1c9"><svg viewBox="0 0 48 48"><circle cx="18" cy="26" r="11" fill="#F2C94C" stroke="#4b2f5e" stroke-width="3"/><circle cx="32" cy="20" r="11" fill="#F2C94C" stroke="#4b2f5e" stroke-width="3"/><path d="M32 14l1.8 4 4.2.4-3.2 2.8 1 4.2-3.8-2.2-3.8 2.2 1-4.2-3.2-2.8 4.2-.4z" fill="#fff6c8"/></svg></div>
+        <div><b>Collect gold coins</b><span>Grab as many as you can!</span></div></div>
+      <div class="tile"><div class="ic" style="background:#d8f0df"><svg viewBox="0 0 48 48"><path d="M24 6l14 8v20l-14 8-14-8V14z" fill="#2fae6a" stroke="#4b2f5e" stroke-width="3" stroke-linejoin="round"/><path d="M24 14l7 10-7 10-7-10z" fill="#6fd69a"/></svg></div>
+        <div><b>Find the gem</b><span>Every map ends with a gem for Stu's compass.</span></div></div>
+      <div class="tile"><div class="ic" style="background:#f6dccd"><svg viewBox="0 0 48 48"><path d="M24 41s-15-9-15-20a8 8 0 0 1 15-4 8 8 0 0 1 15 4c0 11-15 20-15 20z" fill="#C2603B" stroke="#4b2f5e" stroke-width="3" stroke-linejoin="round"/></svg></div>
+        <div><b>Stu can't fall</b><span>A bump just drops a few coins. Keep going!</span></div></div>
+      <div class="tile"><div class="ic" style="background:#e3eef7"><svg viewBox="0 0 48 48"><path d="M24 5c10 0 14 8 14 14 0 7-6 12-9 16h-10c-3-4-9-9-9-16 0-6 4-14 14-14z" fill="#f39a3c" stroke="#4b2f5e" stroke-width="3"/><path d="M12 18h24" stroke="#4f86c6" stroke-width="4"/><rect x="19" y="37" width="10" height="7" rx="2" fill="#b7834f" stroke="#4b2f5e" stroke-width="2.5"/></svg></div>
+        <div><b>Magic moments</b><span>Tap in the balloon to float up. In Rome, tap at the fountain to make a wish!</span></div></div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <h2><span class="dot"></span>Rules</h2>
+    <ol class="rules">
+      <li><span class="n">1</span><span>Stu always keeps running. You help him jump and slide.</span></li>
+      <li><span class="n">2</span><span>There's no game over. Bumps only drop a few coins.</span></li>
+      <li><span class="n">3</span><span>Pick up gold coins on the way.</span></li>
+      <li><span class="n">4</span><span>Reach the end to win the gem.</span></li>
+      <li><span class="n">5</span><span>Turn your phone sideways to play.</span></li>
+    </ol>
+  </section>
+
+  <section id="maps">
+    <h2><span class="dot"></span>Pick a Map</h2>
+    <div class="maps">
+      <div class="map rio">
+        <span class="badge">Map 1</span>
+        <a class="main" href="../genesis/">
+          <img src="img/thumb-rio.webp" alt="Rio de Janeiro map: Stu running on the beach" width="720" height="286">
+          <div class="info"><h3>Rio de Janeiro<span class="sub">Beach to the Corcovado</span></h3><span class="play">Play &#9654;</span></div>
+        </a>
+        <span class="alt"><a href="../genesis-train/">Train ending</a></span>
+      </div>
+      <div class="map rome">
+        <span class="badge">Map 2</span>
+        <a class="main" href="rome/">
+          <img src="img/thumb-rome.webp" alt="Rome map: Stu at the Trevi Fountain" width="720" height="286">
+          <div class="info"><h3>Roma<span class="sub">Spanish Steps to the Colosseum</span></h3><span class="play">Play &#9654;</span></div>
+        </a>
+      </div>
+    </div>
+    <p class="turn">Tip: turn your phone sideways to play.</p>
+  </section>
+</main>
+<footer>Wonder always, wander often!</footer>
+</body>
+</html>
