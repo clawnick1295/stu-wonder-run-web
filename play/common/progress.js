@@ -4,8 +4,8 @@
 // Owners: Rome/home worker created this file; the Rio worker imports it too.
 // See web-2d/muse/progress-v2-proposal.md for the agreed v2 shape.
 export const KEY = 'stuWonderRun.v1';
-const BLANK_STARS = () => ({ coins: false, gem: false, noBump: false });
-const BLANK_RUN = () => ({ completed: false, stars: BLANK_STARS() });
+const BLANK_STARS = () => ({ explorer: false, treasure: false, gem: false, coins: false, noBump: false });
+const BLANK_RUN = () => ({ completed: false, stars: BLANK_STARS(), stickers: { noBump: false } });
 const BLANK = () => ({ coins: 0, ownedOutfits: [], equippedOutfit: null, runs: {}, unlocked: [] });
 // runs that predate the unlock order: a save from before `unlocked` existed that already has coins, outfits or any run progress
 // (or a finished Colosseum) keeps the Colosseum open, so nobody loses the run they could already play.
@@ -14,16 +14,23 @@ const cleanList = l => Array.isArray(l) ? l.filter(x => typeof x === 'string') :
 function raw0(s) { try { return s && s.getItem(KEY); } catch (e) { return null; } }
 function hasKey(s, k) { try { const j = JSON.parse(raw0(s)); return !!j && Object.prototype.hasOwnProperty.call(j, k); } catch (e) { return false; } }
 function store() { try { return window.localStorage; } catch (e) { return null; } }
+// v3 stars (see SHARED RULES v3): stars = { explorer, treasure, gem }, stickers = { noBump }.
+// Old saves stored stars = { coins, gem, noBump }; they migrate so the star count only goes up:
+// explorer = completed (or any old star), treasure = old coins, gem = gem, old noBump star -> noBump sticker.
+// stars.coins / stars.noBump are kept as read-only mirrors so older readers still work; never count them.
+function cleanRun(v) {
+  const src = v.stars && typeof v.stars === 'object' ? v.stars : v;
+  const stk = v.stickers && typeof v.stickers === 'object' ? v.stickers : {};
+  const treasure = !!(src.treasure || src.coins), gem = !!src.gem, noBump = !!(stk.noBump || src.noBump);
+  const completed = !!(v.completed || src.explorer || treasure || gem || noBump);
+  return { completed, stars: { explorer: completed, treasure, gem, coins: treasure, noBump }, stickers: { noBump } };
+}
 function cleanRuns(raw) {
   const out = {};
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
   for (const [id, v] of Object.entries(raw)) {
     if (typeof id !== 'string' || !v || typeof v !== 'object') continue;
-    const src = v.stars && typeof v.stars === 'object' ? v.stars : v;
-    out[id] = {
-      completed: !!v.completed,
-      stars: { coins: !!src.coins, gem: !!src.gem, noBump: !!src.noBump }
-    };
+    out[id] = cleanRun(v);
   }
   return out;
 }
@@ -69,19 +76,18 @@ export function runProgress(id) {
   const p = load();
   return p.runs[id] || BLANK_RUN();
 }
-// OR-merge stars and completion for one run; stars only ever turn on
+// OR-merge stars, stickers and completion for one run; nothing ever turns off.
+// rec: { completed, treasure (alias: coins), gem, noBump } or { completed, stars: {...}, stickers: {...} }
 export function recordRun(id, rec = {}) {
   const p = load();
   const prev = p.runs[id] || BLANK_RUN();
   const src = rec.stars && typeof rec.stars === 'object' ? rec.stars : rec;
-  p.runs[id] = {
-    completed: !!(prev.completed || rec.completed),
-    stars: {
-      coins: !!(prev.stars.coins || src.coins),
-      gem: !!(prev.stars.gem || src.gem),
-      noBump: !!(prev.stars.noBump || src.noBump)
-    }
-  };
+  const stk = rec.stickers && typeof rec.stickers === 'object' ? rec.stickers : rec;
+  p.runs[id] = cleanRun({
+    completed: !!(prev.completed || rec.completed || src.explorer),
+    stars: { treasure: !!(prev.stars.treasure || src.treasure || src.coins), gem: !!(prev.stars.gem || src.gem) },
+    stickers: { noBump: !!(prev.stickers.noBump || stk.noBump || src.noBump) }
+  });
   return save(p);
 }
 // first id in order is always unlocked; each later id opens after the previous run is completed
@@ -93,7 +99,7 @@ export function isUnlocked(id, order) {
 }
 export function starCount(id) {
   const s = runProgress(id).stars;
-  return (s.coins ? 1 : 0) + (s.gem ? 1 : 0) + (s.noBump ? 1 : 0);
+  return (s.explorer ? 1 : 0) + (s.treasure ? 1 : 0) + (s.gem ? 1 : 0);
 }
 // ---------- map registry (v2 final shape; see muse/progress-v2-proposal.md) ----------
 // Every run id is "<map>-<run>". Each map lists its runs in unlock order; the last one is that map's finale.
@@ -117,10 +123,10 @@ export function orderOf(id) { const m = mapOf(id); return m ? MAPS[m].order : [i
 export function runUnlocked(id) { const p = load(), r = p.runs[id]; return !!(r && r.completed) || p.unlocked.includes(id) || isUnlocked(id, orderOf(id)); }
 // the run after this one on the same map (null after the finale)
 export function nextRun(id) { const o = orderOf(id), i = o.indexOf(id); return i >= 0 && i < o.length - 1 ? o[i + 1] : null; }
-// { got, max, completed } for a whole map (home-page cards)
+// { got, max, completed, stickers } for a whole map (home-page cards)
 export function mapStars(map) {
-  const M = MAPS[map]; if (!M) return { got: 0, max: 0, completed: 0 };
-  const runs = load().runs; let got = 0, completed = 0;
-  for (const id of M.order) { const r = runs[id]; if (!r) continue; if (r.completed) completed++; got += (r.stars.coins ? 1 : 0) + (r.stars.gem ? 1 : 0) + (r.stars.noBump ? 1 : 0); }
-  return { got, max: M.order.length * 3, completed };
+  const M = MAPS[map]; if (!M) return { got: 0, max: 0, completed: 0, stickers: 0 };
+  const runs = load().runs; let got = 0, completed = 0, stickers = 0;
+  for (const id of M.order) { const r = runs[id]; if (!r) continue; if (r.completed) completed++; got += (r.stars.explorer ? 1 : 0) + (r.stars.treasure ? 1 : 0) + (r.stars.gem ? 1 : 0); if (r.stickers.noBump) stickers++; }
+  return { got, max: M.order.length * 3, completed, stickers };
 }

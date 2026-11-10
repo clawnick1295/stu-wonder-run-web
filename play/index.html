@@ -104,7 +104,7 @@ h2 .dot{width:14px;height:14px;border-radius:50%;background:var(--gold);border:2
 .play{flex:none;padding:12px 24px;border-radius:999px;color:#fff8ea;font-weight:800;font-size:22px;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink)}
 .rio .play{background:var(--teal)} .rome .play{background:var(--terra)} .china .play{background:#c8372d} .practice .play{background:var(--pine)}
 .lockpill{position:absolute;z-index:2;top:10px;right:10px;display:flex;align-items:center;gap:6px;padding:4px 12px 4px 8px;border-radius:999px;background:var(--card);border:2px solid var(--ink);font:inherit;font-weight:800;font-size:15px;color:var(--ink);cursor:pointer}
-.lockpill svg{width:20px;height:20px}
+.lockpill svg{width:20px;height:20px}.lockpill[hidden]{display:none}
 .map.locked img{filter:grayscale(.85) brightness(.85)}
 .map.locked .play{background:#9b8f9e}
 .gate{position:fixed;inset:0;z-index:20;background:rgba(52,32,64,.6);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -116,6 +116,7 @@ h2 .dot{width:14px;height:14px;border-radius:50%;background:var(--gold);border:2
 .gate .ans button,.gate .x{font:inherit;font-weight:800;font-size:22px;min-width:64px;height:52px;border-radius:16px;border:3px solid var(--ink);background:#fff1cf;color:var(--ink);cursor:pointer}
 .gate .x{font-size:16px;min-width:0;height:40px;padding:0 16px;background:var(--card)}
 .gate .msg{font-size:15px;min-height:20px}
+.gate .ans{flex-wrap:wrap;gap:8px}.gate .ans button{min-width:56px}
 .map a.main:active .play{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .alt{display:block;margin:-4px 16px 14px;font-size:15px;font-weight:800}
 .alt a{display:inline-block;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:#e7f3f1;text-decoration:none}
@@ -192,7 +193,7 @@ footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
       </div>
       <div class="map china" id="chinaCard">
         <span class="badge">Map 3</span>
-        <button class="lockpill" id="chinaLock" aria-label="Grown-up unlock for the China map"><svg viewBox="0 0 48 48"><rect x="9" y="21" width="30" height="22" rx="5" fill="#f2c94c" stroke="#4b2f5e" stroke-width="3"/><path d="M15 21v-6a9 9 0 0 1 18 0v6" fill="none" stroke="#4b2f5e" stroke-width="4"/><circle cx="24" cy="31" r="3" fill="#4b2f5e"/></svg><span id="chinaLockT">Grown-ups</span></button>
+        <button class="lockpill" id="chinaLock" hidden aria-label="Ask a grown-up to unlock the China map"><svg viewBox="0 0 64 48" style="width:52px;height:39px"><circle cx="20" cy="11" r="7" fill="#f4c9a8" stroke="#4b2f5e" stroke-width="2.5"/><path d="M9 44V28a11 11 0 0 1 22 0v16z" fill="#4f6b3a" stroke="#4b2f5e" stroke-width="2.5" stroke-linejoin="round"/><circle cx="41" cy="20" r="5.5" fill="#f4c9a8" stroke="#4b2f5e" stroke-width="2.5"/><path d="M33 44V34a8 8 0 0 1 16 0v10z" fill="#e07a4a" stroke="#4b2f5e" stroke-width="2.5" stroke-linejoin="round"/><path d="M29 34h6" stroke="#4b2f5e" stroke-width="3" stroke-linecap="round"/><rect x="48" y="26" width="13" height="11" rx="2.5" fill="#f2c94c" stroke="#4b2f5e" stroke-width="2"/><path d="M51 26v-3a3.5 3.5 0 0 1 7 0v3" fill="none" stroke="#4b2f5e" stroke-width="2"/></svg></button>
         <a class="main" href="china/" data-map="china">
           <img src="img/thumb-china.webp" alt="China map: Stu drums a dragon boat across the Summer Palace lake" width="720" height="286">
           <div class="info"><h3>China<span class="sub">Hutongs to the Great Wall</span></h3><span class="play">Play &#9654;</span></div>
@@ -223,29 +224,40 @@ import { load, buy, equip, mapStars, mapOwned, mapPaid } from './common/progress
 import { practiceFirst, practiceSeen, practiceURL } from './common/practice.js';
 // Practice card (the shared picture-only Practice Run) + first-timers go through Practice before any map
 { const c = document.getElementById('practiceCard'); document.getElementById('practiceLink').href = practiceURL('', ''); if (practiceSeen()) c.querySelector('.badge').textContent = 'Practice'; }
-// paid maps (China): lock pill + parent gate. Nothing is sold yet; DEV_OPEN_PAID keeps China playable for testing (add ?locked to preview).
-const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen'];
+// paid maps (China). Nothing is sold and every map is open in normal play (DEV_OPEN_PAID); the grown-up icon and the gate
+// only show in the ?locked preview. Gate (v3): an adult-level question in words, 5 choices with uneven gaps in random order,
+// one wrong tap closes it, and every open asks a new question.
+const NUM = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
 const gate = document.getElementById('gate');
+function gateQuestion() {
+  const a = 6 + Math.floor(Math.random() * 7), b = 6 + Math.floor(Math.random() * 7), ok = a * b, opts = new Set([ok]);
+  while (opts.size < 5) { const d = (1 + Math.floor(Math.random() * 14)) * (Math.random() < .5 ? -1 : 1); if (ok + d > 9) opts.add(ok + d); }
+  return { q: 'What is ' + NUM[a] + ' times ' + NUM[b] + '?', ok, opts: [...opts].sort(() => Math.random() - .5) };
+}
 function openGate(map, then) {
-  const a = 4 + Math.floor(Math.random() * 6), b = 3 + Math.floor(Math.random() * 6), ok = a + b, opts = [ok, ok + 2, ok - 3].sort(() => Math.random() - .5);
-  document.getElementById('gateQ').textContent = 'To unlock the ' + (map === 'china' ? 'China' : map) + ' map, tap the answer to ' + WORDS[a] + ' plus ' + WORDS[b] + '.';
+  const G = gateQuestion();
+  document.getElementById('gateQ').textContent = 'Grown-ups: to unlock the ' + (map === 'china' ? 'China' : map) + ' map, tap the answer. ' + G.q;
   const box = document.getElementById('gateA'), msg = document.getElementById('gateMsg'); box.innerHTML = ''; msg.textContent = '';
-  for (const n of opts) { const bt = document.createElement('button'); bt.textContent = n; bt.onclick = () => {
-    if (n !== ok) { msg.textContent = 'Not quite. Ask a grown-up to help.'; return; }
+  box.style.justifyContent = 'space-between';
+  for (const n of G.opts) { const bt = document.createElement('button'); bt.textContent = n; bt.style.marginLeft = Math.floor(Math.random() * 18) + 'px'; bt.onclick = () => {
+    if (n !== G.ok) { gate.hidden = true; return; }   // one wrong tap closes the gate; next time is a new question
     if (mapOwned(map)) { msg.textContent = 'Testing build: China is open. Unlocking for real is coming soon.'; box.innerHTML = ''; setTimeout(() => { gate.hidden = true; if (then) then(); }, 1400); }
     else { msg.textContent = 'Unlocking China is coming soon. Thank you!'; box.innerHTML = ''; } };
     box.appendChild(bt); }
   gate.hidden = false;
 }
 document.getElementById('gateX').onclick = () => { gate.hidden = true; };
-{ const card = document.getElementById('chinaCard'), owned = mapOwned('china');
-  document.getElementById('chinaLockT').textContent = owned ? 'Testing' : 'Grown-ups';
-  { const sub = card.querySelector('.sub'); sub.textContent += owned ? ' \u00b7 grown-up unlock, open in this test build' : ' \u00b7 ask a grown-up to unlock'; }
-  if (!owned) card.classList.add('locked');
-  document.getElementById('chinaLock').addEventListener('click', e => { e.preventDefault(); openGate('china'); });
-  if (new URLSearchParams(location.search).get('gate') === 'china') openGate('china'); }
+{ const card = document.getElementById('chinaCard'), owned = mapOwned('china'), pill = document.getElementById('chinaLock');
+  if (!owned) { card.classList.add('locked'); pill.hidden = false; pill.addEventListener('click', e => { e.preventDefault(); say('ask_grownup'); openGate('china'); }); }
+  if (!owned && new URLSearchParams(location.search).get('gate') === 'china') openGate('china'); }
+// tapping a card: Stu says its name, then off we go (first-timers still go through Practice)
+const NAMEVO = { rio: 'map_rio', rome: 'map_rome', china: 'map_china' };
+function sayThenGo(n, go) { let gone = false; const g = () => { if (!gone) { gone = true; go(); } }; if (muted) return g();
+  try { if (cur) cur.pause(); cur = new Audio(VO + n + '.mp3'); cur.onended = g; cur.onerror = g; cur.play().catch(g); } catch (e) { g(); } setTimeout(g, 1900); }
+document.getElementById('practiceLink').addEventListener('click', e => { e.preventDefault(); const h = e.currentTarget.href; sayThenGo('practice', () => { location.href = h; }); });
 for (const a of document.querySelectorAll('a.main[data-map]')) {
-  a.addEventListener('click', e => { if (mapPaid(a.dataset.map) && !mapOwned(a.dataset.map)) { e.preventDefault(); openGate(a.dataset.map); return; } if (practiceSeen()) return; e.preventDefault(); practiceFirst(a.getAttribute('href'), ''); });
+  a.addEventListener('click', e => { e.preventDefault(); if (mapPaid(a.dataset.map) && !mapOwned(a.dataset.map)) { say('ask_grownup'); openGate(a.dataset.map); return; }
+    sayThenGo(NAMEVO[a.dataset.map], () => { if (practiceSeen()) location.href = a.getAttribute('href'); else practiceFirst(a.getAttribute('href'), ''); }); });
   const st = mapStars(a.dataset.map); if (st.max) { const b = document.createElement('span'); b.className = 'stars'; b.setAttribute('aria-label', st.got + ' of ' + st.max + ' stars'); b.textContent = '\u2605 ' + st.got + '/' + st.max; a.querySelector('.info h3').appendChild(b); }
 }
 import { OUTFITS, drawOutfit, handMask } from './common/outfits.js';
