@@ -9,6 +9,8 @@ export const OUTFITS = [
   { id: 'feather', name: 'Carnival Feather', price: 300, icon: '🪶' },
   { id: 'cape', name: 'Hero Cape', price: 400, icon: '🦸' },
 ];
+// hand patches (rig space, standing body only) to repaint over neck items so his hands stay in front
+export const HAND_PATCH = [[104, 191, 14], [133, 184, 13]];
 export const outfitById = id => OUTFITS.find(o => o.id === id) || null;
 function star(c, x, y, r, rot = 0) { c.beginPath(); for (let i = 0; i < 10; i++) { const a = rot - Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; c.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); } c.closePath(); }
 function leaf(c, x, y, a, L) { c.save(); c.translate(x, y); c.rotate(a); c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(L * 0.5, -L * 0.42, L, 0); c.quadraticCurveTo(L * 0.5, L * 0.42, 0, 0); c.fill(); c.stroke(); c.restore(); }
@@ -45,18 +47,25 @@ export function drawOutfit(c, id, layer, dx = 0, t = 0) {
     c.strokeStyle = ink; c.lineWidth = 3; c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -140); c.stroke();
   }
   if (layer === 'front') {
-    if (id === 'scarf') {   // knot at the neck, two tails streaming back (never covers his face or hands)
-      const w = Math.sin(t * 9) * 9, w2 = Math.sin(t * 9 + 1.3) * 9, kx = 70 + dx * 0.6, ky = 172;
-      c.fillStyle = '#e23b32'; c.strokeStyle = ink; c.lineWidth = 6;
-      c.beginPath(); c.moveTo(kx, ky - 8); c.quadraticCurveTo(kx - 40, ky - 16 + w, kx - 92, ky - 30 + w); c.lineTo(kx - 86, ky - 6 + w); c.quadraticCurveTo(kx - 40, ky + 6, kx, ky + 8); c.closePath(); c.fill(); c.stroke();
-      c.beginPath(); c.moveTo(kx, ky); c.quadraticCurveTo(kx - 34, ky + 18 + w2, kx - 74, ky + 20 + w2); c.lineTo(kx - 66, ky + 42 + w2); c.quadraticCurveTo(kx - 30, ky + 36, kx + 4, ky + 12); c.closePath(); c.fill(); c.stroke();
-      c.strokeStyle = '#ffd84a'; c.lineWidth = 4; c.beginPath(); c.moveTo(kx - 80, ky - 18 + w); c.quadraticCurveTo(kx - 40, ky - 6 + w * 0.5, kx - 8, ky - 2); c.stroke();
-      c.fillStyle = '#e23b32'; c.strokeStyle = ink; c.lineWidth = 6; c.beginPath(); c.ellipse(kx + 2, ky + 2, 15, 13, 0, 0, 7); c.fill(); c.stroke();
+    if (id === 'scarf') {   // knitted scarf wrapped round his neck under the chin, knot on the left, one short fringed tail
+      const w = Math.sin(t * 9) * 3, j = dx ? 1 : 0, nx = 109 + dx * 0.85, ny = 180 + j * 6, hw = 31 + j * 3, edge = '#6b1d22';
+      const wrap = () => { c.beginPath(); c.moveTo(nx - hw, ny - 6); c.quadraticCurveTo(nx, ny + 3, nx + hw, ny - 8);
+        c.quadraticCurveTo(nx + hw + 7, ny - 1, nx + hw, ny + 6); c.quadraticCurveTo(nx, ny + 19, nx - hw, ny + 8); c.quadraticCurveTo(nx - hw - 7, ny + 1, nx - hw, ny - 6); c.closePath(); };
+      c.fillStyle = '#d8342c'; c.strokeStyle = edge; c.lineWidth = 3.2; wrap(); c.fill(); c.stroke();
+      c.save(); wrap(); c.clip(); c.strokeStyle = '#f0675a'; c.lineWidth = 2.4;
+      for (const k of [-2, 4, 10]) { c.beginPath(); c.moveTo(nx - hw - 6, ny + k - 2); c.quadraticCurveTo(nx, ny + k + 9, nx + hw + 6, ny + k - 4); c.stroke(); }
+      c.restore();
+      const kx = nx - hw + 9, ky = ny + 7;
+      c.fillStyle = '#d8342c'; c.strokeStyle = edge; c.lineWidth = 3.2;
+      c.beginPath(); c.moveTo(kx - 6, ky); c.quadraticCurveTo(kx - 11 + w, ky + 16, kx - 9 + w, ky + 30); c.lineTo(kx + 4 + w, ky + 31); c.quadraticCurveTo(kx + 4, ky + 16, kx + 7, ky + 1); c.closePath(); c.fill(); c.stroke();
+      c.strokeStyle = '#f0675a'; c.lineWidth = 2.2; c.beginPath(); c.moveTo(kx - 8 + w, ky + 22); c.lineTo(kx + 3 + w, ky + 23); c.stroke();
+      c.strokeStyle = '#d8342c'; c.lineWidth = 2; for (let i = 0; i < 4; i++) { const fx = kx - 8 + w + i * 3.8; c.beginPath(); c.moveTo(fx, ky + 31); c.lineTo(fx - 0.5, ky + 37); c.stroke(); }
+      c.fillStyle = '#c42a24'; c.strokeStyle = edge; c.lineWidth = 3; c.beginPath(); c.ellipse(kx, ky, 8, 7, -0.3, 0, 7); c.fill(); c.stroke();
     }
     if (id === 'badge') {
       c.fillStyle = '#f4c535'; c.strokeStyle = ink; c.lineWidth = 5;
-      c.beginPath(); c.arc(96, 222, 19, 0, 7); c.fill(); c.stroke();
-      c.fillStyle = '#e2453a'; star(c, 96, 222, 12); c.fill();
+      c.beginPath(); c.arc(96 + dx * 0.9, 222, 19, 0, 7); c.fill(); c.stroke();
+      c.fillStyle = '#e2453a'; star(c, 96 + dx * 0.9, 222, 12); c.fill();
     }
     if (id === 'stars') {
       const y = 128;
@@ -73,4 +82,17 @@ export function drawOutfit(c, id, layer, dx = 0, t = 0) {
     }
   }
   c.restore();
+}
+// Repaint just Stu's hands (and the red backpack strap) on top of neck items, so the scarf sits under his hands.
+// img: a body image; rig point (x, y) is at img pixel (x - ox, y - oy). Returns a canvas the size of img.
+export function handMask(img, ox, oy) {
+  const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const g = c.getContext('2d');
+  g.drawImage(img, 0, 0); const d = g.getImageData(0, 0, c.width, c.height), a = d.data;
+  for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) {
+    const i = (y * c.width + x) * 4, rx = x + ox, ry = y + oy;
+    const inP = HAND_PATCH.some(([px, py, r]) => (rx - px) ** 2 + (ry - py) ** 2 < r * r);
+    const r = a[i], gg = a[i + 1], b = a[i + 2];
+    if (!(inP && r > 110 && r - b > 30 && r - gg > 40)) a[i + 3] = 0;
+  }
+  g.putImageData(d, 0, 0); return c;
 }

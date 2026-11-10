@@ -186,7 +186,7 @@ footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
 <footer>Wonder always, wander often!</footer>
 <script type="module">
 import { load, buy, equip } from './common/progress.js';
-import { OUTFITS, drawOutfit } from './common/outfits.js';
+import { OUTFITS, drawOutfit, handMask } from './common/outfits.js';
 const VO = 'rome/voice/';
 let muted = false; try { muted = localStorage.getItem('stuWonderRun.mute') === '1'; } catch (e) { }
 const muteB = document.getElementById('mute');
@@ -201,11 +201,12 @@ const stand = new Image(); stand.src = 'img/stu-stand.webp';
 const cv = document.getElementById('stuPrev'), cx = cv.getContext('2d');
 let P = load(), sel = P.equippedOutfit, tryOn = null;
 const RIG = [150 - 107.1, 452 - 420];
-function drawStu(c, id, t) { c.clearRect(0, 0, 300, 460); c.save(); c.translate(RIG[0], RIG[1]); drawOutfit(c, id, 'back', 0, t); c.restore(); if (stand.complete) c.drawImage(stand, 0, 0); c.save(); c.translate(RIG[0], RIG[1]); drawOutfit(c, id, 'front', 0, t); c.restore(); }
+function drawStu(c, id, t) { c.clearRect(0, 0, 300, 460); c.save(); c.translate(RIG[0], RIG[1]); drawOutfit(c, id, 'back', 0, t); c.restore(); if (stand.complete) c.drawImage(stand, 0, 0); c.save(); c.translate(RIG[0], RIG[1]); drawOutfit(c, id, 'front', 0, t); c.restore(); if (id === 'scarf' && stand.complete) { if (!handM) handM = handMask(stand, -RIG[0], -RIG[1]); c.drawImage(handM, 0, 0); } }
+let handM = null;
 const items = document.getElementById('items');
 function icon(c, id) { // crop of Stu wearing just this item
   const off = document.createElement('canvas'); off.width = 300; off.height = 460; drawStu(off.getContext('2d'), id, 0);
-  const crop = { badge: [40, 150, 170], scarf: [0, 95, 165], flag: [0, 20, 200], stars: [60, 60, 150], laurel: [40, 40, 200], feather: [0, 0, 200], cape: [20, 150, 240] }[id] || [0, 0, 300];
+  const crop = { badge: [40, 150, 170], scarf: [40, 110, 150], flag: [0, 20, 200], stars: [60, 60, 150], laurel: [40, 40, 200], feather: [0, 0, 200], cape: [20, 150, 240] }[id] || [0, 0, 300];
   const g = c.getContext('2d'); g.clearRect(0, 0, 144, 144); g.drawImage(off, crop[0], crop[1], crop[2], crop[2], 0, 0, 144, 144);
 }
 function render() {
