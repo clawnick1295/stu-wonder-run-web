@@ -119,6 +119,7 @@ footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
   .hero p.tag{font-size:15px;padding:4px 14px}
   section{padding:18px 0 4px}
 }
+.map .stars{display:block;font-size:15px;color:#e0a92a;margin-top:2px;-webkit-text-stroke:0}
 </style>
 </head>
 <body>
@@ -131,7 +132,7 @@ footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
     <a class="bankTop" href="#closet" aria-label="Your coins"><span class="coinI"></span><span id="bankTop">0</span></a>
     <button class="mute" id="mute" aria-label="Sound on or off">&#128266;</button>
     <img class="bg" src="img/hero-960.webp" srcset="img/hero-960.webp 960w, img/hero.webp 1600w" sizes="100vw" width="1600" height="895" alt="Stu waving in front of the 7 New Wonders: Christ the Redeemer, Machu Picchu, Chichen Itza, the Great Wall, the Taj Mahal, Petra and the Colosseum" fetchpriority="high">
-    <a class="jump" href="#maps">Pick a map &darr;</a>
+    <a class="jump" href="#maps">Pick a map</a>
   </div>
 </header>
 
@@ -140,9 +141,9 @@ footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
     <h2><span class="dot"></span>How to Play <button class="say big" data-say="pick_map" aria-label="Hear how to play">&#128266;</button></h2>
     <div class="how">
       <button class="pic" data-say="jump" aria-label="Tap to jump">
-        <span class="scene"><span class="ripple"></span><svg class="hand tap" viewBox="0 0 30 40"><rect x="10" y="1" width="8" height="20" rx="4" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><rect x="3" y="17" width="7" height="12" rx="3.5" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><ellipse cx="17" cy="26" rx="11" ry="10" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><rect x="9" y="34" width="16" height="5" rx="2" fill="#C2603B"/></svg><img class="stu jumpy" src="img/stu-stand.webp" alt=""></span><b>Jump!</b><i class="spk">&#128266;</i></button>
+        <span class="scene"><span class="ripple"></span><img class="stu jumpy" src="img/stu-stand.webp" alt=""></span><b>Jump!</b><i class="spk">&#128266;</i></button>
       <button class="pic" data-say="slide" aria-label="Swipe down to slide">
-        <span class="scene"><span class="arrow down"></span><svg class="hand swipe" viewBox="0 0 30 40"><rect x="10" y="1" width="8" height="20" rx="4" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><rect x="3" y="17" width="7" height="12" rx="3.5" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><ellipse cx="17" cy="26" rx="11" ry="10" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><rect x="9" y="34" width="16" height="5" rx="2" fill="#C2603B"/></svg><img class="stu slidey" src="img/stu-stand.webp" alt=""></span><b>Slide!</b><i class="spk">&#128266;</i></button>
+        <span class="scene"><img class="stu slidey" src="img/stu-stand.webp" alt=""></span><b>Slide!</b><i class="spk">&#128266;</i></button>
       <button class="pic" data-say="coins" aria-label="Grab the gold coins">
         <span class="scene"><span class="coin c1"></span><span class="coin c2"></span><span class="coin c3"></span></span><b>Coins!</b><i class="spk">&#128266;</i></button>
       <button class="pic" data-say="find_gem" aria-label="Find the magic gem">
@@ -155,16 +156,23 @@ footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
   <section id="maps">
     <h2><span class="dot"></span>Pick a Map</h2>
     <div class="maps">
+      <div class="map practice" id="practiceCard">
+        <span class="badge">Start here</span>
+        <a class="main" href="../genesis/?run=practice&amp;next=..%2Fplay%2F" id="practiceLink">
+          <img src="img/thumb-practice.webp" alt="Practice run: Stu jumps, ducks and spins" width="720" height="286">
+          <div class="info"><h3>Practice<span class="sub">Jump, duck and spin</span></h3><span class="play">Play &#9654;</span></div>
+        </a>
+      </div>
       <div class="map rio">
         <span class="badge">Map 1</span>
-        <a class="main" href="../genesis/">
+        <a class="main" href="../genesis/" data-map="rio">
           <img src="img/thumb-rio.webp" alt="Rio de Janeiro map: Stu running on the beach" width="720" height="286">
           <div class="info"><h3>Rio de Janeiro<span class="sub">Beach to the Corcovado</span></h3><span class="play">Play &#9654;</span></div>
         </a>
       </div>
       <div class="map rome">
         <span class="badge">Map 2</span>
-        <a class="main" href="rome/">
+        <a class="main" href="rome/" data-map="rome">
           <img src="img/thumb-rome.webp" alt="Rome map: Stu at the Trevi Fountain" width="720" height="286">
           <div class="info"><h3>Roma<span class="sub">Spanish Steps to the Colosseum</span></h3><span class="play">Play &#9654;</span></div>
         </a>
@@ -185,7 +193,14 @@ footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
 </main>
 <footer>Wonder always, wander often!</footer>
 <script type="module">
-import { load, buy, equip } from './common/progress.js';
+import { load, buy, equip, mapStars } from './common/progress.js';
+import { practiceFirst, practiceSeen, practiceURL } from './common/practice.js';
+// Practice card (the shared picture-only Practice Run) + first-timers go through Practice before any map
+{ const c = document.getElementById('practiceCard'); document.getElementById('practiceLink').href = practiceURL('', ''); if (practiceSeen()) c.querySelector('.badge').textContent = 'Practice'; }
+for (const a of document.querySelectorAll('a.main[data-map]')) {
+  a.addEventListener('click', e => { if (practiceSeen()) return; e.preventDefault(); practiceFirst(a.getAttribute('href'), ''); });
+  const st = mapStars(a.dataset.map); if (st.max) { const b = document.createElement('span'); b.className = 'stars'; b.setAttribute('aria-label', st.got + ' of ' + st.max + ' stars'); b.textContent = '\u2605 ' + st.got + '/' + st.max; a.querySelector('.info h3').appendChild(b); }
+}
 import { OUTFITS, drawOutfit, handMask } from './common/outfits.js';
 const VO = 'rome/voice/';
 let muted = false; try { muted = localStorage.getItem('stuWonderRun.mute') === '1'; } catch (e) { }
