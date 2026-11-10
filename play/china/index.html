@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="data:,"><meta name="theme-color" content="#EFE3CC">
+<title>Stu's Wonder Run — China</title>
+<style>
+:root{--ink:#4b2f5e;--card:#fff8ea;--gold:#f2c94c}
+*{box-sizing:border-box}html,body{margin:0;background:#EFE3CC;color:var(--ink);font:700 16px/1.25 "Trebuchet MS",Verdana,sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:12px 14px 4px;max-width:1100px;margin:0 auto}
+header h1{margin:0;flex:1;font-size:clamp(24px,5vw,38px);color:#ffcf4a;-webkit-text-stroke:1.5px var(--ink);paint-order:stroke;text-shadow:0 3px 0 var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-width:48px;height:48px;padding:0 12px;border-radius:16px;background:var(--card);border:3px solid var(--ink);color:var(--ink);text-decoration:none;font:inherit;font-size:20px;cursor:pointer;box-shadow:0 3px 0 rgba(75,47,94,.25)}
+.tot{display:inline-flex;align-items:center;gap:6px;font-size:20px}
+.coinI{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3b0,var(--gold) 45%,#c98a2a);border:2px solid var(--ink)}
+.star{width:26px;height:26px;display:inline-block}
+main{max-width:1100px;margin:0 auto;padding:8px 14px 26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.run{position:relative;display:flex;flex-direction:column;background:var(--card);border:3px solid var(--ink);border-radius:22px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 4px 0 rgba(75,47,94,.25)}
+.run:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(75,47,94,.25)}
+.run img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}
+.run .num{position:absolute;top:8px;left:8px;width:38px;height:38px;border-radius:50%;background:var(--card);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:20px}
+.run.finale .num{background:#ffcf4a}
+.run .info{padding:8px 12px 10px}.run h2{margin:0 0 6px;font-size:19px}
+.stars{display:flex;gap:10px;align-items:center}.stars span{display:flex;flex-direction:column;align-items:center;gap:2px}
+.stars i{width:16px;height:16px;display:block;background-size:contain;background-repeat:no-repeat;background-position:center}
+.run.locked img{filter:grayscale(1) brightness(.8)}
+.run.locked{cursor:default}.run.locked .stars{opacity:.35}
+.lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.lock svg{width:72px;height:72px;filter:drop-shadow(0 3px 0 rgba(75,47,94,.4))}
+.run.next{border-color:#d9a441;box-shadow:0 0 0 4px rgba(242,201,76,.6),0 4px 0 rgba(75,47,94,.25)}
+.run.next .num{animation:bob 1.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@media (prefers-reduced-motion:reduce){.run.next .num{animation:none}}
+</style></head><body>
+<header><a class="btn" href="../" aria-label="Home"><svg width="26" height="24" viewBox="0 0 26 24"><path d="M2 12 13 2l11 10" fill="#C2603B" stroke="#4b2f5e" stroke-width="2" stroke-linejoin="round"/><rect x="5" y="11" width="16" height="11" fill="#D9A441" stroke="#4b2f5e" stroke-width="2"/><rect x="11" y="15" width="4" height="7" fill="#7a4a2a"/></svg></a>
+<h1>China!</h1>
+<span class="btn tot" aria-label="Stars"><svg class="star" viewBox="0 0 24 24"><path d="M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.6 5.8 21.1l1.4-7L2 9.3l7-.8z" fill="#f2c94c" stroke="#4b2f5e" stroke-width="1.8" stroke-linejoin="round"/></svg><span id="stars">0</span></span>
+<span class="btn tot" aria-label="Coins"><span class="coinI"></span><span id="coins">0</span></span>
+<button class="btn" id="say" aria-label="Hear Stu">&#128266;</button></header>
+<p id="paidNote" hidden style="max-width:1100px;margin:4px auto 0;padding:0 14px;font-size:15px">China is a grown-up unlock. Ask a grown-up to open it on the home page.</p>
+<main id="runs"></main>
+<script type="module">
+import { load, MAPS, runUnlocked, runProgress, mapStars, mapOwned } from '../common/progress.js';
+import { practiceFirst, practiceSeen } from '../common/practice.js';
+const RUNS = { 'china-hutong': ['hutong', 'Beijing Hutongs'], 'china-summer': ['summer', 'The Summer Palace'], 'china-wall': ['wall', 'The Great Wall'] };
+const OWNED = mapOwned('china');
+const STAR = on => `<svg class="star" viewBox="0 0 24 24"><path d="M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.6 5.8 21.1l1.4-7L2 9.3l7-.8z" fill="${on ? '#f2c94c' : '#d8cfc0'}" stroke="#4b2f5e" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+const ICON = { coins: 'radial-gradient(circle at 35% 35%,#fff3b0,#f2c94c 45%,#c98a2a)', gem: 'linear-gradient(135deg,#6fd69a,#2fae6a)', noBump: 'radial-gradient(circle,#C2603B 55%,transparent 56%)' };
+const P = load(); document.getElementById('coins').textContent = P.coins; document.getElementById('stars').textContent = mapStars('china').got + '/' + mapStars('china').max;
+if (!OWNED) document.getElementById('paidNote').hidden = false;
+const box = document.getElementById('runs'); let nextSet = false;
+MAPS.china.order.forEach((id, i) => {
+  const [dir, name] = RUNS[id], open = OWNED && runUnlocked(id), r = runProgress(id), a = document.createElement('a');
+  a.className = 'run' + (open ? '' : ' locked') + (id === MAPS.china.finale ? ' finale' : '');
+  if (open && !r.completed && !nextSet) { a.classList.add('next'); nextSet = true; }
+  a.href = open ? dir + '/' : '#'; a.setAttribute('aria-label', name + (open ? '' : ', locked'));
+  a.innerHTML = `<img src="img/${dir}.webp" alt="" width="480" height="300"><span class="num">${i + 1}</span>` + (open ? '' : `<span class="lock"><svg viewBox="0 0 48 48"><rect x="9" y="21" width="30" height="22" rx="5" fill="#f2c94c" stroke="#4b2f5e" stroke-width="3"/><path d="M15 21v-6a9 9 0 0 1 18 0v6" fill="none" stroke="#4b2f5e" stroke-width="4"/><circle cx="24" cy="31" r="3" fill="#4b2f5e"/></svg></span>`)
+    + `<div class="info"><h2>${name}</h2><div class="stars">` + ['coins', 'gem', 'noBump'].map(k => `<span>${STAR(r.stars[k])}<i style="background:${ICON[k]};border-radius:50%"></i></span>`).join('') + `</div></div>`;
+  a.addEventListener('click', async e => { if (!open) { e.preventDefault(); if (!OWNED) location.href = '../?gate=china'; else say('locked'); return; } if (practiceSeen()) return; e.preventDefault(); practiceFirst('china/' + dir + '/', '../'); });
+  box.appendChild(a);
+});
+let AC = null, muted = false; try { muted = localStorage.getItem('stuWonderRun.mute') === '1'; } catch (e) { }
+function say(n) { if (muted) return; const a = new Audio('voice/' + (n === 'locked' ? 'pick_china' : n) + '.mp3'); a.play().catch(() => { }); }
+document.getElementById('say').addEventListener('click', () => say('pick_china'));
+</script></body></html>
