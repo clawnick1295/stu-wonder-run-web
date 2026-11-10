@@ -16,12 +16,13 @@ body{margin:0;background:var(--trav);color:var(--ink);font-family:"Trebuchet MS"
 a{color:inherit}
 .wrap{max-width:1040px;margin:0 auto;padding:0 18px}
 /* hero */
-.hero{position:relative;overflow:hidden;background:var(--sky)}
-.hero img.bg{display:block;width:100%;height:clamp(230px,58vh,560px);object-fit:cover;object-position:50% 6%}
-.hero .title{position:absolute;left:0;right:0;top:0;text-align:center;padding:14px 12px 0}
+.hero{position:relative;overflow:hidden;background:linear-gradient(#8fbbe0,#bcd7ec)}
+.hero .art{position:relative}
+.hero img.bg{display:block;width:100%;height:auto;aspect-ratio:1600/895;max-height:calc(100vh - 64px);object-fit:cover;object-position:50% 14%}
+.hero .title{text-align:center;padding:12px 12px 10px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 16px;border-bottom:3px solid var(--ink)}
 .hero h1{margin:0;font-size:clamp(30px,6.4vw,62px);color:var(--gold);letter-spacing:.5px;
   -webkit-text-stroke:clamp(1.5px,.35vw,3px) var(--ink);paint-order:stroke fill;text-shadow:0 3px 0 rgba(75,47,94,.35)}
-.hero p.tag{display:inline-block;margin:8px 0 0;padding:6px 16px;border-radius:999px;background:rgba(255,248,234,.92);border:2px solid var(--ink);font-weight:800;font-size:clamp(14px,2.2vw,20px)}
+.hero p.tag{display:inline-block;margin:0;padding:6px 16px;border-radius:999px;background:rgba(255,248,234,.92);border:2px solid var(--ink);font-weight:800;font-size:clamp(14px,2.2vw,20px)}
 .jump{position:absolute;right:16px;bottom:14px;display:inline-block;padding:12px 26px;border-radius:999px;background:var(--terra);color:#fff8ea;
   font-weight:800;font-size:clamp(17px,2.6vw,24px);text-decoration:none;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink)}
 .jump:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
@@ -39,6 +40,59 @@ h2 .dot{width:14px;height:14px;border-radius:50%;background:var(--gold);border:2
 .rules li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;font-size:18px;border-bottom:2px dashed rgba(75,47,94,.2)}
 .rules li:last-child{border-bottom:0}
 .rules .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--gold);border:2px solid var(--ink);display:grid;place-items:center;font-weight:800}
+/* picture-first How to Play */
+.how{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.pic{position:relative;font:inherit;color:inherit;cursor:pointer;background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:10px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 4px 0 rgba(75,47,94,.25)}
+.pic:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(75,47,94,.25)}
+.pic b{font-size:22px}
+.pic .spk{position:absolute;top:8px;right:10px;font-style:normal;font-size:18px;opacity:.75}
+.scene{position:relative;width:120px;height:96px;border-radius:16px;background:linear-gradient(#cfe4f3,#f6e7c8);border:2px solid var(--ink);overflow:hidden}
+.scene .stu{position:absolute;left:58px;bottom:-4px;width:58px;height:auto}
+.hand{position:absolute;width:26px;height:35px;left:14px;top:22px}
+.hand.tap{animation:tap 1.2s ease-in-out infinite}
+.hand.swipe{animation:swipe 1.3s ease-in-out infinite}
+.jumpy{animation:jumpy 1.2s ease-in-out infinite}
+.slidey{transform-origin:50% 50%;animation:slidey 1.3s ease-in-out infinite}
+.ripple{position:absolute;left:10px;top:12px;width:18px;height:18px;border-radius:50%;border:3px solid #f2c94c;opacity:0;animation:ripple 1.2s ease-out infinite}
+.arrow.down{position:absolute;left:8px;top:12px;width:4px;height:52px;background:#fff8ea;border-radius:2px;opacity:.9}
+.arrow.down:after{content:"";position:absolute;left:-6px;bottom:-4px;border:8px solid transparent;border-top:10px solid #fff8ea}
+.coin{position:absolute;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3b0,#f2c94c 45%,#c98a2a);border:2.5px solid var(--ink);animation:spin 1.1s linear infinite}
+.c1{left:14px;top:46px}.c2{left:45px;top:22px;animation-delay:.2s}.c3{left:76px;top:46px;animation-delay:.4s}
+.gem,.heart{position:absolute;left:32px;top:20px;width:56px;height:56px;animation:bob 1.6s ease-in-out infinite}
+.heart{animation:beat 1s ease-in-out infinite}
+@keyframes tap{0%,100%{transform:translateY(-8px)}40%,55%{transform:translateY(0)}}
+@keyframes ripple{0%,40%{opacity:0;transform:scale(.4)}50%{opacity:1}100%{opacity:0;transform:scale(1.8)}}
+@keyframes jumpy{0%,45%,100%{transform:translateY(0)}70%{transform:translateY(-22px)}}
+@keyframes swipe{0%{transform:translateY(-6px);opacity:0}15%{opacity:1}65%{transform:translateY(30px);opacity:1}100%{transform:translateY(30px);opacity:0}}
+@keyframes slidey{0%,20%,85%,100%{transform:none}35%,70%{transform:translate(-18px,14px) rotate(-80deg) scale(.72)}}
+@keyframes spin{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.15)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.hand,.jumpy,.slidey,.ripple,.coin,.gem,.heart{animation:none!important}}
+.say{font:inherit;cursor:pointer;border:2px solid var(--ink);background:var(--card);border-radius:999px;padding:2px 10px;font-size:20px}
+.mute{position:absolute;top:10px;right:12px;z-index:2;width:44px;height:44px;border-radius:50%;font-size:22px;border:3px solid var(--ink);background:rgba(255,248,234,.95);cursor:pointer}
+.hero .bankTop{position:absolute;bottom:14px;left:12px;z-index:2;display:flex;align-items:center;gap:6px;padding:4px 12px 4px 6px;border-radius:999px;border:3px solid var(--ink);background:rgba(255,248,234,.95);font-weight:900;font-size:20px;text-decoration:none}
+.coinI{display:inline-block;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3b0,#f2c94c 45%,#c98a2a);border:2px solid var(--ink)}
+/* closet */
+.closet{display:grid;grid-template-columns:minmax(160px,230px) 1fr;gap:16px;align-items:start}
+.mirror{position:relative;background:linear-gradient(#d8ecf7,#f6e7c8);border:3px solid var(--ink);border-radius:26px;padding:14px 10px 8px;box-shadow:0 6px 0 rgba(75,47,94,.3)}
+.mirror canvas{display:block;width:100%;height:auto;aspect-ratio:300/460}
+.bank{position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:6px;padding:3px 10px 3px 5px;border-radius:999px;border:2px solid var(--ink);background:var(--card);font-weight:900;font-size:19px}
+.off{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);background:var(--card);font-size:18px;cursor:pointer}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px}
+.item{font:inherit;color:inherit;cursor:pointer;position:relative;background:var(--card);border:3px solid var(--ink);border-radius:20px;padding:10px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 4px 0 rgba(75,47,94,.25)}
+.item canvas{width:72px;height:72px}
+.item .nm{font-weight:800;font-size:14px;text-align:center;line-height:1.1}
+.item .pr{display:flex;align-items:center;gap:4px;font-weight:900;font-size:17px}
+.item .pr .coinI{width:18px;height:18px}
+.item.sel{outline:4px solid var(--gold);outline-offset:2px}
+.item.on{background:#e4f3dc}
+.item .tick{position:absolute;top:6px;right:8px;font-size:18px;color:var(--pine);font-weight:900}
+.item .buy{margin-top:2px;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--terra);color:#fff8ea;font-weight:900;font-size:16px;display:flex;gap:5px;align-items:center}
+.item .buy[disabled]{background:#d9cfc0;color:#7d6c80}
+.phone{display:inline-block;width:22px;height:36px;border:3px solid var(--ink);border-radius:6px;background:var(--terra);animation:turn 2.4s ease-in-out infinite}
+@keyframes turn{0%,25%{transform:rotate(0)}55%,90%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+@media (max-width:560px){.closet{grid-template-columns:1fr}.mirror{max-width:220px;margin:0 auto}}
 /* maps */
 .maps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
 .map{position:relative;background:var(--card);border:3px solid var(--ink);border-radius:26px;overflow:hidden;box-shadow:0 6px 0 rgba(75,47,94,.3)}
@@ -55,55 +109,47 @@ h2 .dot{width:14px;height:14px;border-radius:50%;background:var(--gold);border:2
 .badge{position:absolute;top:10px;left:10px;padding:4px 12px;border-radius:999px;background:var(--gold);border:2px solid var(--ink);font-weight:800;font-size:15px}
 footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
 .turn{display:none}
-@media (orientation:portrait){.turn{display:block;margin:10px 0 0;font-size:15px;font-weight:700}
-  .hero img.bg{height:clamp(420px,62vh,560px);object-position:36% 0}
-  .hero .title{top:auto;bottom:78px}}
+@media (orientation:portrait){.turn{display:block;margin:12px 0 0;text-align:center}
+  .hero .title{flex-direction:column}
+  .jump{right:10px;bottom:8px;padding:8px 18px;font-size:16px}}
 /* short landscape phones: keep the hero compact */
 @media (orientation:landscape) and (max-height:500px){
-  .hero img.bg{height:80vh}
-  .hero h1{font-size:40px}
+  .hero .title{padding:8px 12px 7px}
+  .hero h1{font-size:34px}
+  .hero p.tag{font-size:15px;padding:4px 14px}
   section{padding:18px 0 4px}
 }
 </style>
 </head>
 <body>
 <header class="hero">
-  <img class="bg" src="img/hero-960.webp" srcset="img/hero-960.webp 960w, img/hero.webp 1600w" sizes="100vw" alt="Stu waving between Rio de Janeiro and Rome" fetchpriority="high">
   <div class="title">
     <h1>Stu's Wonder Run</h1>
     <p class="tag">Run, jump and wonder around the world!</p>
   </div>
-  <a class="jump" href="#maps">Pick a map &darr;</a>
+  <div class="art">
+    <a class="bankTop" href="#closet" aria-label="Your coins"><span class="coinI"></span><span id="bankTop">0</span></a>
+    <button class="mute" id="mute" aria-label="Sound on or off">&#128266;</button>
+    <img class="bg" src="img/hero-960.webp" srcset="img/hero-960.webp 960w, img/hero.webp 1600w" sizes="100vw" width="1600" height="895" alt="Stu waving in front of the 7 New Wonders: Christ the Redeemer, Machu Picchu, Chichen Itza, the Great Wall, the Taj Mahal, Petra and the Colosseum" fetchpriority="high">
+    <a class="jump" href="#maps">Pick a map &darr;</a>
+  </div>
 </header>
 
 <main class="wrap">
   <section id="how">
-    <h2><span class="dot"></span>How to Play</h2>
+    <h2><span class="dot"></span>How to Play <button class="say big" data-say="pick_map" aria-label="Hear how to play">&#128266;</button></h2>
     <div class="how">
-      <div class="tile"><div class="ic" style="background:#fde7a8"><svg viewBox="0 0 48 48"><path d="M24 6v24" stroke="#4b2f5e" stroke-width="4" stroke-linecap="round"/><path d="M14 16l10-10 10 10" fill="none" stroke="#4b2f5e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="38" r="6" fill="#C2603B" stroke="#4b2f5e" stroke-width="3"/></svg></div>
-        <div><b>Tap to jump</b><span>Tap anywhere. Hold for a big jump.</span></div></div>
-      <div class="tile"><div class="ic" style="background:#d9ecea"><svg viewBox="0 0 48 48"><path d="M24 8v26" stroke="#4b2f5e" stroke-width="4" stroke-linecap="round"/><path d="M14 26l10 10 10-10" fill="none" stroke="#4b2f5e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 42h32" stroke="#5FA8A3" stroke-width="4" stroke-linecap="round"/></svg></div>
-        <div><b>Swipe down to slide</b><span>Duck under birds and pigeons.</span></div></div>
-      <div class="tile"><div class="ic" style="background:#fff1c9"><svg viewBox="0 0 48 48"><circle cx="18" cy="26" r="11" fill="#F2C94C" stroke="#4b2f5e" stroke-width="3"/><circle cx="32" cy="20" r="11" fill="#F2C94C" stroke="#4b2f5e" stroke-width="3"/><path d="M32 14l1.8 4 4.2.4-3.2 2.8 1 4.2-3.8-2.2-3.8 2.2 1-4.2-3.2-2.8 4.2-.4z" fill="#fff6c8"/></svg></div>
-        <div><b>Collect gold coins</b><span>Grab as many as you can!</span></div></div>
-      <div class="tile"><div class="ic" style="background:#d8f0df"><svg viewBox="0 0 48 48"><path d="M24 6l14 8v20l-14 8-14-8V14z" fill="#2fae6a" stroke="#4b2f5e" stroke-width="3" stroke-linejoin="round"/><path d="M24 14l7 10-7 10-7-10z" fill="#6fd69a"/></svg></div>
-        <div><b>Find the gem</b><span>Every map ends with a gem for Stu's compass.</span></div></div>
-      <div class="tile"><div class="ic" style="background:#f6dccd"><svg viewBox="0 0 48 48"><path d="M24 41s-15-9-15-20a8 8 0 0 1 15-4 8 8 0 0 1 15 4c0 11-15 20-15 20z" fill="#C2603B" stroke="#4b2f5e" stroke-width="3" stroke-linejoin="round"/></svg></div>
-        <div><b>Stu can't fall</b><span>A bump just drops a few coins. Keep going!</span></div></div>
-      <div class="tile"><div class="ic" style="background:#e3eef7"><svg viewBox="0 0 48 48"><path d="M24 5c10 0 14 8 14 14 0 7-6 12-9 16h-10c-3-4-9-9-9-16 0-6 4-14 14-14z" fill="#f39a3c" stroke="#4b2f5e" stroke-width="3"/><path d="M12 18h24" stroke="#4f86c6" stroke-width="4"/><rect x="19" y="37" width="10" height="7" rx="2" fill="#b7834f" stroke="#4b2f5e" stroke-width="2.5"/></svg></div>
-        <div><b>Magic moments</b><span>Tap in the balloon to float up. In Rome, tap at the fountain to make a wish!</span></div></div>
+      <button class="pic" data-say="jump" aria-label="Tap to jump">
+        <span class="scene"><span class="ripple"></span><svg class="hand tap" viewBox="0 0 30 40"><rect x="10" y="1" width="8" height="20" rx="4" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><rect x="3" y="17" width="7" height="12" rx="3.5" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><ellipse cx="17" cy="26" rx="11" ry="10" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><rect x="9" y="34" width="16" height="5" rx="2" fill="#C2603B"/></svg><img class="stu jumpy" src="img/stu-stand.webp" alt=""></span><b>Jump!</b><i class="spk">&#128266;</i></button>
+      <button class="pic" data-say="slide" aria-label="Swipe down to slide">
+        <span class="scene"><span class="arrow down"></span><svg class="hand swipe" viewBox="0 0 30 40"><rect x="10" y="1" width="8" height="20" rx="4" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><rect x="3" y="17" width="7" height="12" rx="3.5" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><ellipse cx="17" cy="26" rx="11" ry="10" fill="#fffaf0" stroke="#4b2f5e" stroke-width="2.2"/><rect x="9" y="34" width="16" height="5" rx="2" fill="#C2603B"/></svg><img class="stu slidey" src="img/stu-stand.webp" alt=""></span><b>Slide!</b><i class="spk">&#128266;</i></button>
+      <button class="pic" data-say="coins" aria-label="Grab the gold coins">
+        <span class="scene"><span class="coin c1"></span><span class="coin c2"></span><span class="coin c3"></span></span><b>Coins!</b><i class="spk">&#128266;</i></button>
+      <button class="pic" data-say="find_gem" aria-label="Find the magic gem">
+        <span class="scene"><svg class="gem" viewBox="0 0 48 48"><path d="M24 6l14 8v20l-14 8-14-8V14z" fill="#2fae6a" stroke="#4b2f5e" stroke-width="3" stroke-linejoin="round"/><path d="M24 14l7 10-7 10-7-10z" fill="#6fd69a"/></svg></span><b>Gem!</b><i class="spk">&#128266;</i></button>
+      <button class="pic" data-say="bumps_ok" aria-label="Bumps are okay, Stu never falls">
+        <span class="scene"><svg class="heart" viewBox="0 0 48 48"><path d="M24 41s-15-9-15-20a8 8 0 0 1 15-4 8 8 0 0 1 15 4c0 11-15 20-15 20z" fill="#C2603B" stroke="#4b2f5e" stroke-width="3" stroke-linejoin="round"/></svg></span><b>No falling!</b><i class="spk">&#128266;</i></button>
     </div>
-  </section>
-
-  <section id="rules">
-    <h2><span class="dot"></span>Rules</h2>
-    <ol class="rules">
-      <li><span class="n">1</span><span>Stu always keeps running. You help him jump and slide.</span></li>
-      <li><span class="n">2</span><span>There's no game over. Bumps only drop a few coins.</span></li>
-      <li><span class="n">3</span><span>Pick up gold coins on the way.</span></li>
-      <li><span class="n">4</span><span>Reach the end to win the gem.</span></li>
-      <li><span class="n">5</span><span>Turn your phone sideways to play.</span></li>
-    </ol>
   </section>
 
   <section id="maps">
@@ -115,7 +161,6 @@ footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
           <img src="img/thumb-rio.webp" alt="Rio de Janeiro map: Stu running on the beach" width="720" height="286">
           <div class="info"><h3>Rio de Janeiro<span class="sub">Beach to the Corcovado</span></h3><span class="play">Play &#9654;</span></div>
         </a>
-        <span class="alt"><a href="../genesis-train/">Train ending</a></span>
       </div>
       <div class="map rome">
         <span class="badge">Map 2</span>
@@ -125,9 +170,67 @@ footer{text-align:center;padding:26px 12px 34px;font-size:15px;opacity:.8}
         </a>
       </div>
     </div>
-    <p class="turn">Tip: turn your phone sideways to play.</p>
+    <p class="turn"><span class="phone"></span></p>
+  </section>
+
+  <section id="closet">
+    <h2><span class="dot"></span>Stu's Closet <button class="say big" data-say="closet" aria-label="Hear about the closet">&#128266;</button></h2>
+    <div class="closet">
+      <div class="mirror"><canvas id="stuPrev" width="300" height="460" aria-label="Stu wearing his outfit"></canvas>
+        <div class="bank"><span class="coinI"></span><span id="bank">0</span></div>
+        <button id="takeoff" class="off" hidden aria-label="Take it off">&#10006;</button></div>
+      <div class="items" id="items"></div>
+    </div>
   </section>
 </main>
 <footer>Wonder always, wander often!</footer>
+<script type="module">
+import { load, buy, equip } from './common/progress.js';
+import { OUTFITS, drawOutfit } from './common/outfits.js';
+const VO = 'rome/voice/';
+let muted = false; try { muted = localStorage.getItem('stuWonderRun.mute') === '1'; } catch (e) { }
+const muteB = document.getElementById('mute');
+const setMuteIcon = () => { muteB.textContent = muted ? '\u{1F507}' : '\u{1F50A}'; muteB.setAttribute('aria-pressed', String(muted)); };
+setMuteIcon();
+muteB.onclick = () => { muted = !muted; try { localStorage.setItem('stuWonderRun.mute', muted ? '1' : '0'); } catch (e) { } setMuteIcon(); if (cur) cur.pause(); };
+let cur = null;
+function say(n) { if (muted || !n) return; try { if (cur) cur.pause(); cur = new Audio(VO + n + '.mp3'); cur.play().catch(() => { }); } catch (e) { } }
+document.querySelectorAll('[data-say]').forEach(b => b.addEventListener('click', () => say(b.dataset.say)));
+// closet
+const stand = new Image(); stand.src = 'img/stu-stand.webp';
+const cv = document.getElementById('stuPrev'), cx = cv.getContext('2d');
+let P = load(), sel = P.equippedOutfit, tryOn = null;
+const RIG = [150 - 107.1, 452 - 420];
+function drawStu(c, id, t) { c.clearRect(0, 0, 300, 460); c.save(); c.translate(RIG[0], RIG[1]); drawOutfit(c, id, 'back', 0, t); c.restore(); if (stand.complete) c.drawImage(stand, 0, 0); c.save(); c.translate(RIG[0], RIG[1]); drawOutfit(c, id, 'front', 0, t); c.restore(); }
+const items = document.getElementById('items');
+function icon(c, id) { // crop of Stu wearing just this item
+  const off = document.createElement('canvas'); off.width = 300; off.height = 460; drawStu(off.getContext('2d'), id, 0);
+  const crop = { badge: [40, 150, 170], scarf: [0, 95, 165], flag: [0, 20, 200], stars: [60, 60, 150], laurel: [40, 40, 200], feather: [0, 0, 200], cape: [20, 150, 240] }[id] || [0, 0, 300];
+  const g = c.getContext('2d'); g.clearRect(0, 0, 144, 144); g.drawImage(off, crop[0], crop[1], crop[2], crop[2], 0, 0, 144, 144);
+}
+function render() {
+  P = load();
+  document.getElementById('bank').textContent = P.coins; document.getElementById('bankTop').textContent = P.coins;
+  document.getElementById('takeoff').hidden = !P.equippedOutfit;
+  items.innerHTML = '';
+  for (const o of OUTFITS) {
+    const own = P.ownedOutfits.includes(o.id), on = P.equippedOutfit === o.id;
+    const b = document.createElement('div'); b.className = 'item' + (on ? ' on' : '') + (tryOn === o.id ? ' sel' : ''); b.setAttribute('role', 'button'); b.tabIndex = 0; b.setAttribute('aria-label', o.name + (own ? (on ? ', wearing' : ', yours') : ', ' + o.price + ' coins'));
+    const c = document.createElement('canvas'); c.width = 144; c.height = 144; b.appendChild(c); icon(c, o.id);
+    const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = o.name; b.appendChild(nm);
+    if (own) { if (on) { const t = document.createElement('span'); t.className = 'tick'; t.textContent = '\u2714'; b.appendChild(t); } }
+    else if (tryOn === o.id) { const k = document.createElement('button'); k.className = 'buy'; k.innerHTML = '<span class="coinI"></span>' + o.price; k.disabled = P.coins < o.price; k.setAttribute('aria-label', 'Buy for ' + o.price + ' coins');
+      k.onclick = e => { e.stopPropagation(); if (buy(o.id, o.price)) { tryOn = null; say('looks_great'); render(); } }; b.appendChild(k); }
+    else { const pr = document.createElement('span'); pr.className = 'pr'; pr.innerHTML = '<span class="coinI"></span>' + o.price; b.appendChild(pr); }
+    const act = () => { if (own) { equip(on ? null : o.id); tryOn = null; if (!on) say('looks_great'); } else { tryOn = tryOn === o.id ? null : o.id; } render(); };
+    b.addEventListener('click', act); b.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } });
+    items.appendChild(b);
+  }
+}
+document.getElementById('takeoff').onclick = () => { equip(null); tryOn = null; render(); };
+stand.onload = render; render();
+window.addEventListener('storage', render); window.addEventListener('pageshow', render);
+(function loop(ts) { drawStu(cx, tryOn || P.equippedOutfit, ts / 1000); requestAnimationFrame(loop); })(0);
+</script>
 </body>
 </html>
